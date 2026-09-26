@@ -1,0 +1,59 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '28 17 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-swift:
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install tools
+        run: brew install xcodegen
+
+      # The generated project is intentionally not checked into Git.
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: swift
+          build-mode: manual
+
+      - name: Build
+        run: |
+          xcodebuild \
+            -project LuchadorCam.xcodeproj \
+            -scheme LuchadorCam \
+            -configuration Debug \
+            -destination 'generic/platform=macOS' \
+            -derivedDataPath .build-codeql \
+            ARCHS=arm64 \
+            ENABLE_CODE_COVERAGE=NO \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            ONLY_ACTIVE_ARCH=NO \
+            build
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:swift'

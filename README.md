@@ -101,6 +101,9 @@ macOS 26ランナーの標準Xcodeを使用し、HomebrewでSwiftLintとXcodeGen
 ツールのバージョンはログへ出力するが、厳密な固定はしない。
 SwiftLintは`function_body_length`のみ無効。それ以外は標準ルールを使用する。
 
+CodeQLはAdvanced setupを使用する。XcodeGenで生成後、manualモードでSwiftをビルド・解析する。
+mainへのpush・PR・週次・手動実行が対象。Default setupとの併用はしない。
+
 ## 実機確認
 
 CIはカメラやVisionの実機検証を代替しない。以下を使用する画像・カメラで確認する。
