@@ -6,8 +6,8 @@ Swift / SwiftUI / AVFoundation / Vision / Core Animationを使用する。
 
 ## 必要環境
 
-- macOS 14以降。実機確認環境はmacOS 27.0。
-- Swift 6対応のXcode。開発環境はXcode 27.0。
+- macOS 26以降。実機確認環境はmacOS 27.0。
+- macOS 26 SDKを含むXcode 26以降（Swift 6）。開発環境はXcode 27.0。
 - XcodeGen 2.46.0以降
 - 利用可能なカメラとカメラへのアクセス許可
 
