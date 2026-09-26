@@ -10,11 +10,11 @@ enum MaskImage {
         }
 
         guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-              let image = CGImageSourceCreateImageAtIndex(
-                  source,
-                  0,
-                  [kCGImageSourceShouldCacheImmediately: true] as CFDictionary
-              ) else {
+            let image = CGImageSourceCreateImageAtIndex(
+                source,
+                0,
+                [kCGImageSourceShouldCacheImmediately: true] as CFDictionary
+            ) else {
             NSLog("ERROR: mask.png could not be decoded")
             return nil
         }

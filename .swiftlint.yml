@@ -2,6 +2,12 @@ included:
   - LuchadorCam
   - Tests
 
+opt_in_rules:
+  - indentation_width
+
+indentation_width:
+  indentation_width: 4
+
 # Keep capture setup and frame handling together until splitting has a practical benefit.
 disabled_rules:
   - function_body_length

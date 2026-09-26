@@ -15,7 +15,7 @@ enum MaskGeometry {
         let sourceDistance = hypot(source.x, source.y)
         let targetDistance = hypot(target.x, target.y)
         guard sourceDistance.isFinite, targetDistance.isFinite,
-              sourceDistance > 0, targetDistance > 0 else { return nil }
+            sourceDistance > 0, targetDistance > 0 else { return nil }
         let scale = targetDistance / sourceDistance
         let angle = atan2(target.y, target.x) - atan2(source.y, source.x)
         let scaledCosine = scale * cos(angle)

@@ -23,13 +23,17 @@ jobs:
           persist-credentials: false
 
       - name: Install tools
-        run: brew install swiftlint xcodegen
+        run: brew install editorconfig-checker swiftlint xcodegen
 
       - name: Show tool versions
         run: |
           xcodebuild -version
           swiftlint version
           xcodegen --version
+          editorconfig-checker --version
+
+      - name: Check EditorConfig
+        run: editorconfig-checker
 
       - name: Lint
         run: swiftlint lint --strict --no-cache

@@ -83,7 +83,8 @@ PNGの目穴の中心を目安にした値。画像内の目の中心が(x, y)�
 ## テスト・CI
 
 ```sh
-brew install swiftlint
+brew install swiftlint xcodegen editorconfig-checker
+editorconfig-checker
 swiftlint lint --strict --no-cache
 xcodegen generate
 xcodebuild \
@@ -96,10 +97,12 @@ xcodebuild \
 ```
 
 純粋な座標・transform計算の6テストで、テストバンドルはアプリを起動しない。
-GitHub ActionsはPR・mainへのpush・手動実行でlint → 生成 → build/testを行う。
-macOS 26ランナーの標準Xcodeを使用し、HomebrewでSwiftLintとXcodeGenを導入する。
+GitHub ActionsはPR・mainへのpush・手動実行でEditorConfig検査 → lint → 生成 → build/testを行う。
+macOS 26ランナーの標準Xcodeを使用し、HomebrewでEditorConfig Checker・SwiftLint・XcodeGenを導入する。
 ツールのバージョンはログへ出力するが、厳密な固定はしない。
-SwiftLintは`function_body_length`のみ無効。それ以外は標準ルールを使用する。
+整形規則は`.editorconfig`に定義し、`editorconfig-checker`でGit管理下のテキストファイルを検査する。
+SwiftLintは標準ルールに加えて
+`indentation_width`で4スペースのインデントを検査し、`function_body_length`のみ無効にする。
 
 CodeQLはAdvanced setupを使用する。XcodeGenで生成後、manualモードでSwiftをビルド・解析する。
 Swift・entitlements・`project.yml`・workflowを変更したmainへのpush、週次、手動実行が対象。

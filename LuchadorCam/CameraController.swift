@@ -136,9 +136,11 @@ final class CameraController: NSObject, ObservableObject, @unchecked Sendable {
             }
             faceDetector = detector
             output.setSampleBufferDelegate(detector, queue: detectionQueue)
-            NSLog("VideoDataOutput configured: rotation=%.0f, mirrored=%@, discardsLate=%@",
-                  connection.videoRotationAngle, connection.isVideoMirrored ? "true" : "false",
-                  output.alwaysDiscardsLateVideoFrames ? "true" : "false")
+            NSLog(
+                "VideoDataOutput configured: rotation=%.0f, mirrored=%@, discardsLate=%@",
+                connection.videoRotationAngle, connection.isVideoMirrored ? "true" : "false",
+                output.alwaysDiscardsLateVideoFrames ? "true" : "false"
+            )
             isConfigured = true
             return true
         } catch {

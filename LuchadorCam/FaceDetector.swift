@@ -49,7 +49,7 @@ final class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate
                 loggedFrame = true
             }
             guard connection.videoRotationAngle == 0, !connection.isVideoMirrored,
-                  attachment == nil || attachment?.uint32Value == CGImagePropertyOrientation.up.rawValue else {
+                attachment == nil || attachment?.uint32Value == CGImagePropertyOrientation.up.rawValue else {
                 fail("検出入力の向きが想定と異なります。回転0°・非反転の入力が必要です。")
                 return
             }
@@ -77,8 +77,10 @@ final class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate
                     )
                 )
                 if !loggedFace {
-                    NSLog("Vision detected a face (leftEye=%@, rightEye=%@)",
-                          result.leftEye == nil ? "false" : "true", result.rightEye == nil ? "false" : "true")
+                    NSLog(
+                        "Vision detected a face (leftEye=%@, rightEye=%@)",
+                        result.leftEye == nil ? "false" : "true", result.rightEye == nil ? "false" : "true"
+                    )
                     loggedFace = true
                 }
                 onResult(result, nil)

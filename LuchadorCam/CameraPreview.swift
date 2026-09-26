@@ -95,12 +95,16 @@ final class CameraPreviewView: NSView {
             return
         }
         if !loggedPreview {
-            NSLog("Preview mapping: rotation=%.0f, mirrored=%@, gravity=%@",
-                  connection.videoRotationAngle, connection.isVideoMirrored ? "true" : "false",
-                  previewLayer.videoGravity.rawValue)
-            NSLog("Overlay geometry: viewFlipped=%@, rootFlipped=%@, shapeContentsFlipped=%@",
-                  isFlipped ? "true" : "false", layer?.isGeometryFlipped == true ? "true" : "false",
-                  faceLayer.contentsAreFlipped() ? "true" : "false")
+            NSLog(
+                "Preview mapping: rotation=%.0f, mirrored=%@, gravity=%@",
+                connection.videoRotationAngle, connection.isVideoMirrored ? "true" : "false",
+                previewLayer.videoGravity.rawValue
+            )
+            NSLog(
+                "Overlay geometry: viewFlipped=%@, rootFlipped=%@, shapeContentsFlipped=%@",
+                isFlipped ? "true" : "false", layer?.isGeometryFlipped == true ? "true" : "false",
+                faceLayer.contentsAreFlipped() ? "true" : "false"
+            )
             loggedPreview = true
         }
         // Conversion APIs account for preview rotation, mirroring and aspect-fill.
@@ -114,10 +118,10 @@ final class CameraPreviewView: NSView {
         leftEyeLayer.path = eyePath(leftEye)
         rightEyeLayer.path = eyePath(rightEye)
         if let maskImage, let leftEye, let rightEye,
-           let transform = MaskGeometry.transform(
-               imageSize: CGSize(width: maskImage.width, height: maskImage.height),
-               leftEye: leftEye, rightEye: rightEye
-           ) {
+            let transform = MaskGeometry.transform(
+                imageSize: CGSize(width: maskImage.width, height: maskImage.height),
+                leftEye: leftEye, rightEye: rightEye
+            ) {
             // Zero anchor/position lets the affine transform map PNG pixels directly.
             maskLayer.setAffineTransform(transform)
             maskLayer.isHidden = false
