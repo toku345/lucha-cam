@@ -3,8 +3,8 @@ import Foundation
 // PNG anchors use normalized coordinates measured from the image's top-left.
 // Names correspond to the Vision landmarks verified in Step 3.
 enum MaskGeometry {
-    static let leftEyeAnchor = CGPoint(x: 0.290, y: 0.428)
-    static let rightEyeAnchor = CGPoint(x: 0.708, y: 0.428)
+    static let leftEyeAnchor = CGPoint(x: 0.350, y: 0.554)
+    static let rightEyeAnchor = CGPoint(x: 0.650, y: 0.554)
 
     static func transform(imageSize: CGSize, leftEye: CGPoint, rightEye: CGPoint) -> CGAffineTransform? {
         guard imageSize.width > 0, imageSize.height > 0 else { return nil }

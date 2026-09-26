@@ -2,7 +2,7 @@ import XCTest
 
 final class MaskGeometryTests: XCTestCase {
     func testBothAnchorsLandOnEyesAfterTranslationScaleAndRotation() throws {
-        let size = CGSize(width: 800, height: 600)
+        let size = CGSize(width: 1254, height: 1254)
         for eyes in [
             (CGPoint(x: 120, y: 180), CGPoint(x: 320, y: 180)),
             (CGPoint(x: 50, y: 300), CGPoint(x: 200, y: 180)),
