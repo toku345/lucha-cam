@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Install tools
+        run: brew install swiftlint xcodegen
+
+      - name: Show tool versions
+        run: |
+          xcodebuild -version
+          swiftlint version
+          xcodegen --version
+
+      - name: Lint
+        run: swiftlint lint --strict --no-cache
+
+      - name: Generate project
+        run: xcodegen generate
+
+      # The test bundle has no app host: no camera or permission dialog is used.
+      # xcodebuild test also builds the app through the LuchadorCam scheme.
+      - name: Build and test
+        run: |
+          xcodebuild \
+            -project LuchadorCam.xcodeproj \
+            -scheme LuchadorCam \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            -derivedDataPath .build \
+            test

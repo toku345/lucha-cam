@@ -1,0 +1,7 @@
+included:
+  - LuchadorCam
+  - Tests
+
+# Keep capture setup and frame handling together until splitting has a practical benefit.
+disabled_rules:
+  - function_body_length
