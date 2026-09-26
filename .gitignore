@@ -1,0 +1,5 @@
+/.build/
+/LuchadorCam.xcodeproj/
+xcuserdata/
+*.xcuserstate
+.DS_Store

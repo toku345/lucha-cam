@@ -1,0 +1,52 @@
+name: LuchadorCam
+options:
+  minimumXcodeGenVersion: 2.46.0
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+targets:
+  LuchadorCam:
+    type: application
+    platform: macOS
+    entitlements:
+      path: LuchadorCam/LuchadorCam.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.device.camera: true
+    sources:
+      - path: LuchadorCam
+      - path: assets/mask.png
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: local.LuchadorCam
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSPrincipalClass: NSApplication
+        INFOPLIST_KEY_NSCameraUsageDescription: カメラ映像をウィンドウに表示するために使用します。
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+  FaceGeometryTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests
+      - path: LuchadorCam/FaceGeometry.swift
+      - path: LuchadorCam/MaskGeometry.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: local.LuchadorCam.FaceGeometryTests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+schemes:
+  LuchadorCam:
+    build:
+      targets:
+        LuchadorCam: all
+    run:
+      config: Debug
+    test:
+      targets:
+        - FaceGeometryTests
