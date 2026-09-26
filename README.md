@@ -102,7 +102,10 @@ macOS 26ランナーの標準Xcodeを使用し、HomebrewでSwiftLintとXcodeGen
 SwiftLintは`function_body_length`のみ無効。それ以外は標準ルールを使用する。
 
 CodeQLはAdvanced setupを使用する。XcodeGenで生成後、manualモードでSwiftをビルド・解析する。
-mainへのpush・PR・週次・手動実行が対象。Default setupとの併用はしない。
+Swift・entitlements・`project.yml`・workflowを変更したmainへのpush、週次、手動実行が対象。
+PRではCodeQLを実行せず、通常CIでlint・build/testを確認する。
+READMEや画像だけのpushではCodeQLを省略する。週次・手動実行では変更ファイルにかかわらず解析する。
+CodeQLの指摘がマージ後に判明する運用とし、Default setupとの併用はしない。
 
 ## 実機確認
 
