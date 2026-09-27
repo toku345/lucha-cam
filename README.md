@@ -121,6 +121,78 @@ CIはカメラやVisionの実機検証を代替しない。以下を使用する
 5. 可能な範囲で権限拒否・未接続・片目欠落を試す。
    目を覆ってもVisionが位置を推定する場合がある。
 
+## OBS経由でGoogle Meetに映す（暫定的な検証方法）
+
+アプリ側の変更なしで、次の経路でマスク付き映像をMeetへ送れる。
+
+```text
+LuchadorCam → OBSのWindow Capture → OBS Virtual Camera → Google Meet
+```
+
+この方法ではLuchadorCamとOBSの両方を起動しておく必要がある。
+OBSはアプリのビルドや単体利用には不要。現時点では自作Camera Extensionを実装せず、
+まずOBS経由で数回使い、追従品質と使い勝手を確認する。
+OBSの起動・キャプチャ設定が日常利用の負担になり、Meetから直接選べるカメラが必要になったら、
+映像の受け渡し・拡張の導入・権限管理を含むCamera Extensionの開発を検討する。
+
+### 初回設定
+
+1. [OBS Studio](https://obsproject.com/download)をインストールする。
+   Homebrewを使う場合は`brew install --cask obs`でもよい。
+2. LuchadorCamを起動し、実カメラの映像とマスクが表示されることを確認する。
+3. OBSにmacOSの画面収録権限を許可し、要求された場合はOBSを再起動する。
+   この構成ではOBSによる実カメラ・マイクの取得や、入力監視の権限は不要。
+4. OBSの設定 → 映像で、基本（キャンバス）解像度・出力解像度をともに1280×720、FPSを30にする。
+5. シーンを作り、ソースに「macOS Screen Capture」を追加する。
+   取得方法を「Window Capture」にし、LuchadorCamのウィンドウを選ぶ。カーソル表示はOFFにする。
+6. ソースの変換設定で、タイトルバーが入る場合は上端をクロップする。
+   「画面に合わせる（Fit to Screen）」で縦横比を保って配置し、余白は黒帯のまま許容する。
+   クロップ量は画面の表示倍率などで変わるため、OBSのプレビューを見て調整する。
+7. Studio ModeをOFFにし、Virtual Cameraの出力を「Program（Default）」にする。
+   「Start Virtual Camera」を押す。録画・ストリーミングの開始は不要。
+8. 初回にOBSのシステム拡張の有効化を求められたら、システム設定で許可して認証する。
+   検証したmacOS 27.0では「一般 → ログイン項目と機能拡張 → アプリ別 → OBS → Media Extension」だった。
+   有効化後はOBSを再起動し、Virtual Cameraを開始し直す。
+
+画面収録権限はOS上では画面全体も取得できる権限だが、OBSのソースはLuchadorCamのウィンドウに限定する。
+画面全体の取得へ切り替えて調査するときは、先にVirtual Cameraを停止する。
+設定名はOS・OBSのバージョンで異なる。詳しくはOBS公式の
+[macOS Screen Capture](https://obsproject.com/kb/macos-screen-capture-source)と
+[Virtual Camera Troubleshooting](https://obsproject.com/kb/virtual-camera-troubleshooting)を参照する。
+
+### Meetでの確認と終了
+
+1. ChromeでMeetを開き、カメラに「OBS Virtual Camera」を選ぶ。
+   ブラウザーのカメラアクセスを許可し、背景ぼかしなどの映像エフェクトはOFFにする。
+   映像だけの検証ではマイクをOFFにし、マイク権限は追加しなくてよい。
+2. Macで会議に参加し、別端末も同じ会議へ参加させる。
+   別端末のカメラ・マイクをOFF、スピーカーを消音にして、Macからのマスク付き映像を確認する。
+   同じアカウントで切り替え画面が出る場合は「その他の参加方法」から
+   「このデバイスでも参加（Join here too）」を選ぶ（[Google公式の説明](https://support.google.com/meet/answer/14762432?hl=en)）。
+3. 5分程度、顔の左右移動・近づく／離れる・首の傾き・画角外からの復帰を試す。
+   別端末で映像停止や遅延の増加がないか確認する。
+4. MeetのカメラをOFFにしてLuchadorCamを再起動し、実カメラの映像が出ることを確認する。
+   OBSが再取得できなければ、ソースの対象ウィンドウを選び直す。
+   OBSのプレビューを確認してからMeetのカメラをONに戻す。
+5. 終了時はMeetから退出し、OBSの「Stop Virtual Camera」を押してLuchadorCamを終了する。
+   カメラの使用表示が消えることも確認する。
+
+ウィンドウをリサイズすると映像の切り取り範囲やOBS側の余白が変わる可能性がある。
+検証中は大きさを固定し、最小化やフルスクリーン切り替えを避ける。
+顔枠・目のマーカー・説明文も配信に含まれる。
+表示切替は[Issue #1](https://github.com/toku345/lucha-cam/issues/1)で対応する。
+マスクは顔や目を検出できないと消えるため、素顔を隠す用途は保証しない。
+
+### 検証結果（2026-09-26）
+
+- 環境: Apple Silicon、macOS 27.0、OBS 32.2.2、Chrome 154。
+- 確認済み: コード変更なしでカメラ映像・PNGマスク・デバッグ表示をウィンドウ取得し、
+  OBS Virtual Camera経由でMeetへ送信。別端末でマスク付き映像を受信できた。
+- 設定: 1280×720 / 30fps、タイトルバーをクロップ、縦横比を維持して配置。
+- 終了: Meet退出、Virtual Camera停止、LuchadorCam終了を確認した。
+- 未確認: 時間を測った5分間の連続動作、遅延の定量評価、アプリ再起動後の再取得、
+  最小化・リサイズ・他ウィンドウによる遮蔽の影響。長時間安定性の保証ではない。
+
 ## 制限
 
 - 2D追従のみ。横顔の遠近変形や遮蔽物は再現しない。
@@ -128,7 +200,8 @@ CIはカメラやVisionの実機検証を代替しない。以下を使用する
 - 最大の顔1件のみ。人物の継続識別はしない。
 - システム既定カメラのみ。選択UIや切断後の自動復旧はない。
 - 任意のカメラ・姿勢・対応OS全バージョンでの動作は未検証。
-- 仮想カメラ、Google Meet、OBS連携、Core Image、Metal、3Dは未実装。
+- アプリ自身の仮想カメラ出力・OBS専用連携API、Core Image、Metal、3Dは未実装。
+  Meetでの利用は上記のOBSウィンドウ取得による暫定構成。
 
 ## ライセンス
 
